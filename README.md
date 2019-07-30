@@ -95,8 +95,8 @@ to map data with column `name` from cell `A2`
 to get row number from value in column `name`
 
 ```python
->>> sample_sheet.get_row_number_by_value(
->>>     sample_sheet.SHEET_COLUMNS["name"], "A2"
+>>> sample_sheet.find_row_number_by_value(
+>>>     sample_sheet.SHEET_COLUMNS["name"], "A2", case_sensitive=False
 >>> )
 2
 ```

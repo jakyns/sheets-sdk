@@ -44,8 +44,12 @@ class Resource(Base):
 
         return header_values[0]
 
-    def get_row_number_by_value(self, column_id, value):
+    def find_row_number_by_value(self, column_id, value, **kwargs):
         value_list = self.get_all_cells_in_column(column_id)
+
+        case_sensitive = kwargs.get("case_sensitive", True)
+        if not case_sensitive:
+            value_list = [val.lower() for val in value_list]
 
         try:
             value_index = value_list.index(value)

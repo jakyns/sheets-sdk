@@ -17,7 +17,7 @@ class Authorization:
         except ValueError:
             raise ValueError("Permission denied")
 
-        service = build("sheets", "v4", credentials=credentials)
+        service = build("sheets", "v4", credentials=credentials, cache_discovery=False)
         sheet = service.spreadsheets()
 
         return sheet

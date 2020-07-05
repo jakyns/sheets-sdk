@@ -30,17 +30,17 @@ class Resource(Base):
         return result["updatedCells"]
 
     def get_all_cells_in_column(self, column_id):
-        cell_range_exclude_header = "{}2:{}".format(column_id, column_id)
+        cell_range_exclude_header = f"{column_id}2:{column_id}"
 
         column_values = self.get_cells_by_range(
-            "{}!{}".format(self.SHEET_NAME, cell_range_exclude_header)
+            f"{self.SHEET_NAME}!{cell_range_exclude_header}"
         )
         value_list = [val[0] for val in column_values]
 
         return value_list
 
     def get_all_headers(self):
-        header_values = self.get_cells_by_range("{}!1:1".format(self.SHEET_NAME))
+        header_values = self.get_cells_by_range(f"{self.SHEET_NAME}!1:1")
 
         return header_values[0]
 

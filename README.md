@@ -1,17 +1,19 @@
-# Google Sheets SDK
+# Sheets SDK
 
 ## Dependencies
 
-- Python 3.6.x or higher
+- Python 3.6 or higher
 - [Pipfile](https://github.com/pypa/pipfile)
 - [Google Cloud Account](https://cloud.google.com)
+
+# Google Sheets
 
 ## Configuration
 
 - APIs & Services (Google Cloud)
-  - Enable Google Sheets API
-  - Create service account key credential
-  - Choose role as at least `Project -> Editor`
+  - Enable Google Sheets API.
+  - Create service account.
+  - Add role as at least `Project -> Editor`.
 
 - Google Sheets
   - Add service account for granting access to any sheet you want 
@@ -21,8 +23,8 @@
 Copy environment file `.env.xxx` to  `.env` according to your environment and add necessary values below.
 
 ```sh
-CREDENTIALS=
 SPREADSHEET_ID=
+GOOGLE_SERVICE_ACCOUNT=
 ```
 
 Initiate virtual environment and generate Pipfile and Pipfile.lock by running:
@@ -51,7 +53,7 @@ For basic usage, you can use the module in your application by importing the
 
 Define example class that want to integrate with Google Sheets API.
 
-```
+```python
 >>> class SampleSheet(sheets.GoogleSheets):
 >>>    SHEET_NAME = "Sheet1"
 >>>    SHEET_COLUMNS = {"name": "A", "code": "B"}
@@ -60,57 +62,69 @@ Define example class that want to integrate with Google Sheets API.
 ```
 
 After credentials and constants are set, you can play with Google Sheets API. 
-For example, to get all data from column `name`:
 
-```python
->>> sample_sheet.get_all_cells_in_column(sample_sheet.SHEET_COLUMNS["name"])
-["A2", "A3"]
-```
-
-to get all headers:
+### List all headers
 
 ```python
 >>> sample_sheet.get_all_headers()
 ["name", "code"]
 ```
 
-to map data with column `name` from cell `A2`
+### Get specific cell
 
 ```python
->>> cell_range = "{}{}:{}{}".format(
->>>     sample_sheet.SHEET_COLUMNS["name"],
->>>     range[0],
->>>     sample_sheet.SHEET_COLUMNS["name"],
->>>     range[1],
->>> )
+>>> column_name = "name"
+>>> cell_no = 2
 >>>
->>> name_list = sample_sheet.get_cells_by_range(
->>>     "{}!{}".format(sample_sheet.SHEET_NAME, cell_range)
->>> )
->>>
->>> dict(zip(sample_sheet.SHEET_COLUMNS.keys(), name_list[0]))
-{"name": ["A2"]}
+>>> sample_sheet.get_specific_cell(column_name, cell_no)
+["A2"]
 ```
 
-to get row number from value in column `name`
+### Get multiple cells range
 
 ```python
->>> sample_sheet.find_row_number_by_value(
->>>     sample_sheet.SHEET_COLUMNS["name"], "A2", case_sensitive=False
->>> )
+>>> column_name = "name"
+>>> cell_range = [2, 3]
+>>>
+>>> sample_sheet.get_multiple_cell_ranges(column_name, cell_range)
+["A2", "A3"]
+```
+
+### Get all cells by column name
+
+```python
+>>> column_name = "code"
+>>>
+>>> sample_sheet.get_all_cells_by_column_name(column_name)
+["B2", "B3"]
+```
+
+### Find row number by value
+
+```python
+>>> column_name = "code"
+>>> value = "A2"
+>>>
+>>> sample_sheet.find_row_number_by_value(column_name, value)
 2
 ```
 
-update specific cell to another value
+### Update specific cell
 
 ```python
->>> sample_sheet.update_cells_by_range(
->>>     "{}!{}{}".format(
->>>         sample_sheet.SHEET_NAME, 
->>>         sample_sheet.SHEET_COLUMNS["name"],
->>>         range[0]
->>>     ),
->>>     {"values": [["AA"]]},
->>> )
-1
+>>> column_name = "name"
+>>> cell_no = 2
+>>> new_value = "AA2"
+>>>
+>>> sample_sheet.update_specific_cell(column_name, cell_no, new_value)
+True
+```
+
+### Append new rows
+
+```python
+>>> new_values = [["1", "A4"], ["2", "A5"]]
+>>>
+>>> sample_sheet.append_new_rows(new_values)
+True
 ```

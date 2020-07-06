@@ -6,5 +6,8 @@ from .google.resource import Resource
 
 
 class GoogleSheets(Resource):
-    CREDENTIALS = os.getenv("CREDENTIALS")
+    CREDENTIALS = os.getenv("GOOGLE_SERVICE_ACCOUNT")
     SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
+
+
+__all__ = [Authorization, Base]

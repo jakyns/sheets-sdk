@@ -2,6 +2,12 @@ from .base import Base
 
 
 class Resource(Base):
+    def list_all_headers(self) -> list:
+        ranges = "1:1"
+        values = self.__read_multiple_ranges(f"{self.SHEET_NAME}!{ranges}")[0]["values"]
+
+        return values[0]
+
     def get_specific_cell(self, column_name: str, cell_no: int) -> str:
         sheet_column = self.SHEET_COLUMNS[column_name]
         cell_range = f"{sheet_column}{cell_no}"
@@ -55,11 +61,10 @@ class Resource(Base):
         )
         return True if result else False
 
-    def list_all_headers(self) -> list:
-        ranges = "1:1"
-        values = self.__read_multiple_ranges(f"{self.SHEET_NAME}!{ranges}")[0]["values"]
+    def append_new_rows(self, new_values: list) -> bool:
+        result = self.__append_values(new_values)
 
-        return values[0]
+        return True if result else False
 
     # private
 
@@ -102,3 +107,20 @@ class Resource(Base):
         )
 
         return result["updatedCells"]
+
+    def __append_values(self, new_values: list) -> int:
+        appended_values = {"majorDimension": "ROWS", "values": new_values}
+
+        result = (
+            self.sheets.values()
+            .append(
+                spreadsheetId=self.spreadsheet_id,
+                range=self.SHEET_NAME,
+                body=appended_values,
+                valueInputOption="RAW",
+                insertDataOption="INSERT_ROWS",
+            )
+            .execute()
+        )
+
+        return result["updates"]["updatedCells"]
